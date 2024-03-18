@@ -1,17 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import App from './App';
 import { darkTheme } from './theme';
 
-ReactDOM.render(
-	<React.StrictMode>
-		<RecoilRoot>
-			<ThemeProvider theme={darkTheme}>
-				<App />
-			</ThemeProvider>
-		</RecoilRoot>
-	</React.StrictMode>,
-	document.getElementById('root')
-);
+const rootElement: HTMLElement | null = document.getElementById('root');
+
+if (rootElement) {
+	createRoot(rootElement).render(
+		<React.StrictMode>
+			<RecoilRoot>
+				<ThemeProvider theme={darkTheme}>
+					<App />
+				</ThemeProvider>
+			</RecoilRoot>
+		</React.StrictMode>
+	);
+} else {
+	console.error("Root element with id 'root' not found!");
+}
