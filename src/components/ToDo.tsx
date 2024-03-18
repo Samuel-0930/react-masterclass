@@ -14,6 +14,14 @@ const ToDo: React.FC<Props> = ({ text, category, id }) => {
 		setToDos((oldToDos) => {
 			const targetIndex = oldToDos.findIndex((toDo) => toDo.id === id);
 			const newToDo = { text, id, category: name as any };
+			localStorage.setItem(
+				'toDoList',
+				JSON.stringify([
+					...oldToDos.slice(0, targetIndex),
+					newToDo,
+					...oldToDos.slice(targetIndex + 1),
+				])
+			);
 			return [
 				...oldToDos.slice(0, targetIndex),
 				newToDo,
@@ -21,6 +29,26 @@ const ToDo: React.FC<Props> = ({ text, category, id }) => {
 			];
 		});
 	};
+
+	const handleDelete = () => {
+		setToDos((oldToDos) => {
+			const targetIndex = oldToDos.findIndex((toDo) => toDo.id === id);
+			console.log(targetIndex);
+
+			localStorage.setItem(
+				'toDoList',
+				JSON.stringify([
+					...oldToDos.slice(0, targetIndex),
+					...oldToDos.slice(targetIndex + 1),
+				])
+			);
+			return [
+				...oldToDos.slice(0, targetIndex),
+				...oldToDos.slice(targetIndex + 1),
+			];
+		});
+	};
+
 	return (
 		<li>
 			<span>{text}</span>
@@ -45,6 +73,7 @@ const ToDo: React.FC<Props> = ({ text, category, id }) => {
 					Done
 				</button>
 			)}
+			<button onClick={handleDelete}>Delete</button>
 		</li>
 	);
 };

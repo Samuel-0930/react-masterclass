@@ -20,10 +20,13 @@ const CreateToDo: React.FC<Props> = () => {
 
 	const handleValid = ({ toDo }: IForm) => {
 		console.log('add to do', toDo);
-		setToDos((oldToDos) => [
-			{ text: toDo, id: Date.now(), category },
-			...oldToDos,
-		]);
+		setToDos((oldToDos) => {
+			localStorage.setItem(
+				'toDoList',
+				JSON.stringify([{ text: toDo, id: Date.now(), category }, ...oldToDos])
+			);
+			return [{ text: toDo, id: Date.now(), category }, ...oldToDos];
+		});
 		setValue('toDo', '');
 	};
 
