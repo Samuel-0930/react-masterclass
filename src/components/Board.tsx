@@ -1,0 +1,53 @@
+// Board.tsx
+import React from 'react';
+import { Droppable } from 'react-beautiful-dnd';
+import DraggableCard from './DraggableCard';
+import styled from 'styled-components';
+
+type Props = {
+	// props의 타입 정의
+	toDos: string[];
+	boardId: string;
+};
+
+const Wrapper = styled.div`
+	width: 300px;
+	padding: 20px 10px;
+	padding-top: 10px;
+	background-color: ${(props) => props.theme.boardColor};
+	border-radius: 5px;
+	min-height: 300px;
+`;
+
+const Title = styled.h2`
+	text-align: center;
+	font-weight: 600;
+	margin-bottom: 10px;
+	font-size: 18px;
+`;
+
+const Board: React.FC<Props> = ({ toDos, boardId }) => {
+	return (
+		<Wrapper>
+			<Title>{boardId}</Title>
+			<Droppable droppableId={boardId}>
+				{(magic) => (
+					<div
+						ref={magic.innerRef}
+						{...magic.droppableProps}>
+						{toDos.map((toDo, index) => (
+							<DraggableCard
+								key={toDo}
+								index={index}
+								toDo={toDo}
+							/>
+						))}
+						{magic.placeholder}
+					</div>
+				)}
+			</Droppable>
+		</Wrapper>
+	);
+};
+
+export default Board;
