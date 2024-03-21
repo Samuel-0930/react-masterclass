@@ -1,12 +1,15 @@
 // Board.tsx
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
-import DraggableCard from './DraggableCard';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import DraggableCard from './DraggableCard';
+import { ITodo, toDoState } from '../atoms';
+import { useSetRecoilState } from 'recoil';
 
 type Props = {
 	// props의 타입 정의
-	toDos: string[];
+	toDos: ITodo[];
 	boardId: string;
 };
 
@@ -44,10 +47,43 @@ const Area = styled.div<IAreaProps>`
 	padding: 20px;
 `;
 
+const Form = styled.form`
+	width: 100%;
+	input {
+		width: 100%;
+	}
+`;
+
+interface IForm {
+	toDo: string;
+}
+
 const Board: React.FC<Props> = ({ toDos, boardId }) => {
+	const setToDos = useSetRecoilState(toDoState);
+	const { register, setValue, handleSubmit } = useForm<IForm>();
+	const onValid = ({ toDo }: IForm) => {
+		const newToDo = {
+			id: Date.now(),
+			text: toDo,
+		};
+		setToDos((allBoards) => {
+			return {
+				...allBoards,
+				[boardId]: [...allBoards[boardId], newToDo],
+			};
+		});
+		setValue('toDo', '');
+	};
 	return (
 		<Wrapper>
 			<Title>{boardId}</Title>
+			<Form onSubmit={handleSubmit(onValid)}>
+				<input
+					{...register('toDo', { required: true })}
+					type='text'
+					placeholder={`Add task on ${boardId}`}
+				/>
+			</Form>
 			<Droppable droppableId={boardId}>
 				{(magic, snapshot) => (
 					<Area
@@ -57,9 +93,10 @@ const Board: React.FC<Props> = ({ toDos, boardId }) => {
 						{...magic.droppableProps}>
 						{toDos.map((toDo, index) => (
 							<DraggableCard
-								key={toDo}
+								key={toDo.id}
 								index={index}
-								toDo={toDo}
+								toDoId={toDo.id}
+								toDoText={toDo.text}
 							/>
 						))}
 						{magic.placeholder}

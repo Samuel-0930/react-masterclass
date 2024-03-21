@@ -5,7 +5,8 @@ import { Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 
 type Props = {
-	toDo: string;
+	toDoId: number;
+	toDoText: string;
 	index: number;
 };
 
@@ -20,13 +21,11 @@ const Card = styled.div<{ isDragging: boolean }>`
 		props.isDragging ? '0px 2px 5px rgba(0,0,0,0.05)' : ''};
 `;
 
-const DraggableCard: React.FC<Props> = ({ toDo, index }) => {
-	console.log(toDo, ' rerendered');
-
+const DraggableCard: React.FC<Props> = ({ toDoId, toDoText, index }) => {
 	return (
 		<Draggable
 			// key={toDo}
-			draggableId={toDo}
+			draggableId={toDoId + ''}
 			index={index}>
 			{(magic, snapshot) => (
 				<Card
@@ -34,7 +33,7 @@ const DraggableCard: React.FC<Props> = ({ toDo, index }) => {
 					ref={magic.innerRef}
 					{...magic.draggableProps}
 					{...magic.dragHandleProps}>
-					{toDo}
+					{toDoText}
 				</Card>
 			)}
 		</Draggable>
